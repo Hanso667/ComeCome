@@ -16,7 +16,7 @@ let enemySpawn = setInterval(() => {
         enemy.className = "enemy";
         document.getElementById(enext).appendChild(enemy)
     }
-}, Math.floor(Math.random() * 2000));
+}, Math.floor(Math.random() * (2000-1000)+1000));
 
 
 
