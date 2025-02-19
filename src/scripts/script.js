@@ -1,56 +1,65 @@
-let piece = document.createElement("div");
-piece.id = ("piece");
-let s11 = document.getElementById("1-1");
-s11.appendChild(piece)
+// Criando e posicionando a peça inicial
+const piece = document.createElement("div");
+piece.id = "piece";
+document.getElementById("1-1").appendChild(piece);
+
 let x = 1, y = 1;
-let ex, ey;
-let next;
-let enext;
 let score = 0;
-let scoreFinal;
 
-let enemySpawn = setInterval(() => {
-    ex = Math.floor(Math.random() * (5-1)+1);
-    ey = Math.floor(Math.random() * (5-1)+1);
-    enext = `${ex}-${ey}`
-    if (document.getElementById(enext).children.length == 0) {
-        let enemy = document.createElement("div");
+// Função para atualizar o placar
+const updateScore = () => {
+    document.getElementById("score").textContent = `Score: ${score}`;
+};
+
+// Função para gerar inimigos aleatoriamente
+const spawnEnemy = () => {
+    const ex = Math.floor(Math.random() * 4) + 1;
+    const ey = Math.floor(Math.random() * 4) + 1;
+    const enemyPosition = `${ex}-${ey}`;
+    
+    const cell = document.getElementById(enemyPosition);
+    if (cell.children.length === 0) {
+        const enemy = document.createElement("div");
         enemy.className = "enemy";
-        document.getElementById(enext).appendChild(enemy)
+        cell.appendChild(enemy);
     }
-}, Math.floor(Math.random() * (2000-1000)+1000));
+};
 
+// Spawning de inimigos em intervalos aleatórios
+setInterval(spawnEnemy, Math.floor(Math.random() * 1000) + 1000);
 
+// Função para mover a peça
+const movePiece = (newX, newY) => {
+    const nextPosition = `${newY}-${newX}`;
+    const nextCell = document.getElementById(nextPosition);
 
+    // Se houver um inimigo, remove e adiciona ponto
+    if (nextCell.firstChild) {
+        nextCell.removeChild(nextCell.firstChild);
+        score++;
+        updateScore();
+    }
 
+    // Move a peça para a nova posição
+    nextCell.appendChild(piece);
+    x = newX;
+    y = newY;
+};
+
+// Evento de teclado para movimentação
 document.addEventListener("keydown", (e) => {
-    let moved = false;
-
-    if (e.key == "ArrowLeft" && x - 1 >= 1) {
-        x -= 1;
-        moved = true;
-    } 
-    else if (e.key == "ArrowRight" && x + 1 <= 4) {
-        x += 1;
-        moved = true;
-    } 
-    else if (e.key == "ArrowDown" && y + 1 <= 4) {
-        y += 1;
-        moved = true;
-    } 
-    else if (e.key == "ArrowUp" && y - 1 >= 1) {
-        y -= 1;
-        moved = true;
-    }
-
-    if (moved) {
-        next = `${y}-${x}`;
-        let element = document.getElementById(next);
-        if (element.firstChild) {
-            element.removeChild(element.firstChild);
-            score += 1;
-            document.getElementById("score").textContent = `Score: ${score}`;
-        }
-        element.appendChild(piece);
+    switch (e.key) {
+        case "ArrowLeft":
+            if (x > 1) movePiece(x - 1, y);
+            break;
+        case "ArrowRight":
+            if (x < 4) movePiece(x + 1, y);
+            break;
+        case "ArrowDown":
+            if (y < 4) movePiece(x, y + 1);
+            break;
+        case "ArrowUp":
+            if (y > 1) movePiece(x, y - 1);
+            break;
     }
 });
