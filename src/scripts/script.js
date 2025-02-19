@@ -6,6 +6,8 @@ let x = 1, y = 1;
 let ex, ey;
 let next;
 let enext;
+let score = 0;
+let scoreFinal;
 
 let enemySpawn = setInterval(() => {
     ex = Math.floor(Math.random() * (5-1)+1);
@@ -22,49 +24,33 @@ let enemySpawn = setInterval(() => {
 
 
 document.addEventListener("keydown", (e) => {
-    if (e.key == "ArrowLeft") {
-        if (x - 1 >= 1) {
-            x -= 1;
-        }
-        next = `${y}-${x}`;
-        let element = document.getElementById(next);
-        if (element.firstChild) {
-            element.removeChild(element.firstChild);
-        }
-        document.getElementById(next).appendChild(piece);
-    }
-    else if (e.key == "ArrowRight") {
-        if (x + 1 <= 4) {
-            x += 1;
-        }
+    let moved = false;
 
+    if (e.key == "ArrowLeft" && x - 1 >= 1) {
+        x -= 1;
+        moved = true;
+    } 
+    else if (e.key == "ArrowRight" && x + 1 <= 4) {
+        x += 1;
+        moved = true;
+    } 
+    else if (e.key == "ArrowDown" && y + 1 <= 4) {
+        y += 1;
+        moved = true;
+    } 
+    else if (e.key == "ArrowUp" && y - 1 >= 1) {
+        y -= 1;
+        moved = true;
+    }
+
+    if (moved) {
         next = `${y}-${x}`;
         let element = document.getElementById(next);
         if (element.firstChild) {
             element.removeChild(element.firstChild);
+            score += 1;
+            document.getElementById("score").textContent = `Score: ${score}`;
         }
-        document.getElementById(next).appendChild(piece);
+        element.appendChild(piece);
     }
-    else if (e.key == "ArrowDown") {
-        if (y + 1 <= 4) {
-            y += 1;
-        }
-        next = `${y}-${x}`;
-        let element = document.getElementById(next);
-        if (element.firstChild) {
-            element.removeChild(element.firstChild);
-        }
-        document.getElementById(next).appendChild(piece);
-    }
-    else if (e.key == "ArrowUp") {
-        if (y - 1 >= 1) {
-            y -= 1;
-        }
-        next = `${y}-${x}`;
-        let element = document.getElementById(next);
-        if (element.firstChild) {
-            element.removeChild(element.firstChild);
-        }
-        document.getElementById(next).appendChild(piece);
-    }
-})
+});
